@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>todo!</title>
+    <style>
+        .panel {
+            background-color: #eee;
+            padding: 10px;
+            display: inline-block;
+        }
+        .item_piece {
+            background-color: #fff;
+            width: 550px;
+            height: 50px;
+            border: 1px solid #eee;
+            display: flex;
+        }
+        .item_piece_left{
+            width: 400px;
+            height: 50px;
+            display: inline-block;
+            background-color: chartreuse;
+        }
+        .item_piece_left input{
+            width: 395px;
+            height: 48px;
+            border: 0px;
+            font-size: 20px;
+        }
+        .item_piece_right{
+            width: 100px;
+            height: 50px;
+            display: inline-flex;
+            background-color: coral;
+        }
+        .item_piece_right select{
+            width: 100px;
+            height: 50px;
+            font-size: 20px;
+            border: 0px;
+        }
+    </style>
+    <script src="./js/EventUtil.js"></script>
+    <script src="./js/ElementUtil.js"></script>
+    <script type="text/javascript">
+        function enterEvent(event) {
+            event = EventUtil.getEvent(event);
+            if( EventUtil.getCharCode( event ) == 13 ){
+                let target = EventUtil.getTarget( event );
+                if( target.id == 'todoEnter' ){
+                    todoEnter();
+                }
+            }
+        }
+
+        function todoEnter() {
+            let todoEnter = document.querySelector('#todoEnter');
+            let panel = document.querySelector('.panel');
+            let importance = todoEnter.parentElement.parentElement.querySelector('select[name=importance]');
+            addTodo(todoEnter.value, getSelectedOptions(importance)[0].value);
+        }
+
+        function addTodo(text, selectData) {
+            let itemPiece = document.createElement('div');
+
+            let itemPieceLeft = document.createElement('div');
+            let input = document.createElement('input');
+
+            let itemPieceRight = document.createElement('div');
+            let importance = document.createElement('select');
+            let option1 = document.createElement('option');
+            let option2 = document.createElement('option');
+
+            input.value = text;
+
+            option1.setAttribute('value', 1);
+            option1.appendChild( document.createTextNode('1') );
+            option2.setAttribute('value', 2);
+            option2.appendChild( document.createTextNode('2') );
+            importance.appendChild(option1);
+            importance.appendChild(option2);
+            setSelectOptions(importance, [selectData]);
+            itemPieceRight.appendChild(importance);
+            itemPieceRight.setAttribute('class', 'item_piece_right');
+
+            input.setAttribute('type', 'text');
+            input.setAttribute('value', text);
+            itemPieceLeft.appendChild(input);
+            itemPieceLeft.setAttribute('class', 'item_piece_left');
+
+            itemPiece.appendChild(itemPieceLeft);
+            itemPiece.appendChild(itemPieceRight);
+            itemPiece.setAttribute('class', 'item_piece');
+        
+            document.querySelector('#todoPanel').appendChild(itemPiece);
+        }
+
+        window.onload = function(){
+            let panel = document.querySelector(".panel");
+            EventUtil.addHandler(panel, 'keyup', enterEvent);
+        }
+    </script>
+</head>
+
+<body>
+    <div id="todoPanel" class="panel">
+        <div class="item_piece">
+            <div class="item_piece_left">
+                <input type="text" id="todoEnter" name="title">
+            </div>
+            <div class="item_piece_right">
+                <select name="importance">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
